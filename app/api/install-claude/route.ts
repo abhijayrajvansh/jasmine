@@ -26,7 +26,7 @@ export async function POST() {
       try {
         // Install Claude CLI locally using npm
         const cmd = "npm";
-        const args = ["install", "@anthropic-ai/claude-cli", "--save"];
+        const args = ["install", "@anthropic-ai/claude-code", "--save"];
 
         controller.enqueue(
           encoder.encode("Installing Claude CLI locally...\n")

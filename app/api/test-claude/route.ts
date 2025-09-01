@@ -5,7 +5,7 @@ import { spawn } from "child_process";
 import { promises as fs } from "fs";
 import path from "path";
 
-export async function POST() {
+export async function POST(): Promise<Response> {
   try {
     // Check if Claude is installed locally
     const localClaudePath = path.join(
@@ -23,7 +23,7 @@ export async function POST() {
       // Local installation not found, try global
     }
 
-    return new Promise((resolve) => {
+    return new Promise<Response>((resolve) => {
       const child = spawn(claudePath, ["--version"], {
         cwd: process.cwd(),
         env: { ...process.env },

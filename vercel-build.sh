@@ -5,7 +5,7 @@ echo "🚀 Vercel build script starting..."
 
 # Install Claude CLI if not already installed
 echo "📦 Installing Claude CLI..."
-npm install @anthropic-ai/claude-cli --no-save || {
+npm install @anthropic-ai/claude-code --no-save || {
     echo "⚠️ Claude CLI installation failed, trying alternative approach..."
     # Alternative: use npx approach
     echo "Using npx fallback approach"

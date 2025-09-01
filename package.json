@@ -9,7 +9,7 @@
     "lint": "eslint",
     "setup": "./setup.sh",
     "test-api": "./test-api.sh",
-    "install-claude": "npm install @anthropic-ai/claude-cli --no-save || echo 'Claude CLI installation failed, continuing...'"
+    "install-claude": "npm install @anthropic-ai/claude-code --no-save || echo 'Claude CLI installation failed, continuing...'"
   },
   "dependencies": {
     "react": "19.1.0",
