@@ -76,7 +76,10 @@ export async function POST(req: Request) {
 
         enhancedPrompt += prompt;
 
-        child = spawn(cmd, args, {
+        // Pass prompt as command line argument instead of stdin
+        const finalArgs = [...args, enhancedPrompt];
+
+        child = spawn(cmd, finalArgs, {
           cwd: workingDirectory || process.cwd(),
           env: { ...process.env },
           stdio: ["pipe", "pipe", "pipe"],
@@ -102,8 +105,7 @@ export async function POST(req: Request) {
           __LOCAL_RUN_BUSY = false;
         });
 
-        // feed enhanced prompt to stdin (many CLIs accept prompt via stdin)
-        child.stdin.write(enhancedPrompt + "\n");
+        // Close stdin since we're passing prompt as argument
         child.stdin.end();
       } catch (err: unknown) {
         controller.enqueue(encoder.encode(`[exception] ${String(err)}\n`));

@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "npm run install-claude && next build --turbopack",
+    "build-vercel": "next build --turbopack",
     "start": "next start",
     "lint": "eslint",
     "setup": "./setup.sh",
@@ -23,8 +24,10 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "eslint": "^9",
+    "eslint": "^8.57.0",
     "eslint-config-next": "15.5.2",
+    "eslint-plugin-react": "^7.33.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
     "tailwindcss": "^4",
     "typescript": "^5"
   },

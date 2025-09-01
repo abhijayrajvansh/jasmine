@@ -1,0 +1,10 @@
+{
+  "buildCommand": "npm run build-vercel",
+  "installCommand": "npm install && npm run install-claude",
+  "framework": "nextjs",
+  "functions": {
+    "app/api/*/route.ts": {
+      "maxDuration": 300
+    }
+  }
+}

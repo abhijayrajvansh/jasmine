@@ -17,6 +17,13 @@ The `/scripts` page provides automated installation and testing of Claude CLI fo
 
 ## Vercel Deployment Setup
 
+### Build Configuration
+The project is now configured for Vercel deployment with:
+- **Vercel-specific build command**: `npm run build-vercel`
+- **ESLint compatibility**: Uses ESLint v8.57.0 for compatibility
+- **Required dependencies**: Includes `eslint-plugin-react-hooks` and `eslint-plugin-react`
+- **Build optimization**: Separate Vercel build that skips local Claude installation
+
 ### Environment Variables
 Add these to your Vercel project settings:
 
@@ -28,14 +35,13 @@ CLAUDE_CLI_ARGS=--print --dangerously-skip-permissions --permission-mode bypassP
 ### Alternative Configuration (if the above fails)
 ```
 CLAUDE_CLI_PATH=npx
-CLAUDE_CLI_ARGS=@anthropic-ai/claude-cli --print --dangerously-skip-permissions --permission-mode bypassPermissions
+CLAUDE_CLI_ARGS=@anthropic-ai/claude-code --print --dangerously-skip-permissions --permission-mode bypassPermissions
 ```
 
-### Build Configuration
-The project automatically installs Claude CLI during the build process:
-- `npm run build` now includes Claude CLI installation
-- Vercel build script handles installation gracefully
-- Fallback to npx approach if local installation fails
+### Files for Vercel Deployment
+- `vercel.json` - Build and function configuration
+- `.vercelignore` - Optimized file exclusions
+- `build-vercel` script - Clean build without local dependencies
 
 ## Usage
 
