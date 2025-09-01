@@ -47,11 +47,11 @@ export async function POST(req: Request) {
           stdio: ["pipe", "pipe", "pipe"],
         });
 
-        child.stdout.on("data", (chunk: any) => {
+        child.stdout.on("data", (chunk: Buffer) => {
           controller.enqueue(encoder.encode(chunk.toString()));
         });
 
-        child.stderr.on("data", (chunk: any) => {
+        child.stderr.on("data", (chunk: Buffer) => {
           controller.enqueue(encoder.encode("[stderr] " + chunk.toString()));
         });
 
@@ -70,7 +70,7 @@ export async function POST(req: Request) {
         // feed prompt to stdin (many CLIs accept prompt via stdin)
         child.stdin.write(prompt + "\n");
         child.stdin.end();
-      } catch (err: any) {
+      } catch (err: unknown) {
         controller.enqueue(encoder.encode(`[exception] ${String(err)}\n`));
         controller.close();
         __LOCAL_RUN_BUSY = false;

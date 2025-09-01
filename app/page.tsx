@@ -47,7 +47,9 @@ export default function Home() {
         setResponse(accumulatedResponse);
       }
     } catch (error) {
-      setResponse(`Error: ${error instanceof Error ? error.message : String(error)}`);
+      setResponse(
+        `Error: ${error instanceof Error ? error.message : String(error)}`
+      );
     } finally {
       setIsLoading(false);
     }
@@ -59,10 +61,13 @@ export default function Home() {
         <h1 className="text-3xl font-bold text-black mb-8 text-center">
           Claude UI
         </h1>
-        
+
         <form onSubmit={handleSubmit} className="mb-8">
           <div className="mb-4">
-            <label htmlFor="prompt" className="block text-sm font-medium text-black mb-2">
+            <label
+              htmlFor="prompt"
+              className="block text-sm font-medium text-black mb-2"
+            >
               Enter your prompt:
             </label>
             <textarea
@@ -74,7 +79,7 @@ export default function Home() {
               disabled={isLoading}
             />
           </div>
-          
+
           <button
             type="submit"
             disabled={isLoading || !prompt.trim()}
