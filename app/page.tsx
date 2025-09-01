@@ -6,9 +6,11 @@ export default function Home() {
   const [prompt, setPrompt] = useState("");
   const [response, setResponse] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  
+
   // Configuration states
-  const [workingDirectory, setWorkingDirectory] = useState("/tmp/claude-workspace");
+  const [workingDirectory, setWorkingDirectory] = useState(
+    "/tmp/claude-workspace"
+  );
   const [githubRepo, setGithubRepo] = useState("");
   const [branch, setBranch] = useState("main");
   const [showConfig, setShowConfig] = useState(false);
@@ -26,11 +28,11 @@ export default function Home() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           prompt,
           workingDirectory,
           githubRepo,
-          branch
+          branch,
         }),
       });
 
@@ -76,7 +78,9 @@ export default function Home() {
         {/* Configuration Section */}
         <div className="mb-6 bg-gray-50 border-2 border-gray-300 rounded-lg p-4">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-lg font-semibold text-black">Project Configuration</h2>
+            <h2 className="text-lg font-semibold text-black">
+              Project Configuration
+            </h2>
             <button
               type="button"
               onClick={() => setShowConfig(!showConfig)}
@@ -85,19 +89,30 @@ export default function Home() {
               {showConfig ? "Hide" : "Show"} Settings
             </button>
           </div>
-          
+
           {!showConfig && (
             <div className="text-sm text-gray-600 space-y-1">
-              <div><strong>Directory:</strong> {workingDirectory}</div>
-              {githubRepo && <div><strong>Repo:</strong> {githubRepo}</div>}
-              <div><strong>Branch:</strong> {branch}</div>
+              <div>
+                <strong>Directory:</strong> {workingDirectory}
+              </div>
+              {githubRepo && (
+                <div>
+                  <strong>Repo:</strong> {githubRepo}
+                </div>
+              )}
+              <div>
+                <strong>Branch:</strong> {branch}
+              </div>
             </div>
           )}
-          
+
           {showConfig && (
             <div className="space-y-4">
               <div>
-                <label htmlFor="workingDirectory" className="block text-sm font-medium text-black mb-2">
+                <label
+                  htmlFor="workingDirectory"
+                  className="block text-sm font-medium text-black mb-2"
+                >
                   Working Directory:
                 </label>
                 <input
@@ -109,11 +124,17 @@ export default function Home() {
                   placeholder="/path/to/your/project"
                   disabled={isLoading}
                 />
-                <p className="text-xs text-gray-600 mt-1">Directory where Claude will execute commands and work with files</p>
+                <p className="text-xs text-gray-600 mt-1">
+                  Directory where Claude will execute commands and work with
+                  files
+                </p>
               </div>
 
               <div>
-                <label htmlFor="githubRepo" className="block text-sm font-medium text-black mb-2">
+                <label
+                  htmlFor="githubRepo"
+                  className="block text-sm font-medium text-black mb-2"
+                >
                   GitHub Repository (optional):
                 </label>
                 <input
@@ -125,11 +146,16 @@ export default function Home() {
                   placeholder="https://github.com/username/repo.git or username/repo"
                   disabled={isLoading}
                 />
-                <p className="text-xs text-gray-600 mt-1">Repository URL for Claude to clone and work with</p>
+                <p className="text-xs text-gray-600 mt-1">
+                  Repository URL for Claude to clone and work with
+                </p>
               </div>
 
               <div>
-                <label htmlFor="branch" className="block text-sm font-medium text-black mb-2">
+                <label
+                  htmlFor="branch"
+                  className="block text-sm font-medium text-black mb-2"
+                >
                   Branch:
                 </label>
                 <input
@@ -141,11 +167,15 @@ export default function Home() {
                   placeholder="main"
                   disabled={isLoading}
                 />
-                <p className="text-xs text-gray-600 mt-1">Git branch to checkout for the project</p>
+                <p className="text-xs text-gray-600 mt-1">
+                  Git branch to checkout for the project
+                </p>
               </div>
 
               <div className="border-t pt-4">
-                <h3 className="text-sm font-semibold text-black mb-3">Quick Setup Templates:</h3>
+                <h3 className="text-sm font-semibold text-black mb-3">
+                  Quick Setup Templates:
+                </h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
                   <button
                     type="button"

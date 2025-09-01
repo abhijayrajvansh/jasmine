@@ -4,7 +4,7 @@ export const runtime = "nodejs"; // ensures Node runtime so child_process works
 import { spawn } from "child_process";
 import type { ChildProcessWithoutNullStreams } from "child_process";
 
-type RunRequestBody = { 
+type RunRequestBody = {
   prompt?: string;
   workingDirectory?: string;
   githubRepo?: string;
@@ -57,23 +57,23 @@ export async function POST(req: Request) {
       try {
         // Create enhanced prompt with configuration context
         let enhancedPrompt = "";
-        
+
         if (workingDirectory) {
           enhancedPrompt += `Working Directory: ${workingDirectory}\n`;
         }
-        
+
         if (githubRepo) {
           enhancedPrompt += `GitHub Repository: ${githubRepo}\n`;
         }
-        
+
         if (branch && branch !== "main") {
           enhancedPrompt += `Branch: ${branch}\n`;
         }
-        
+
         if (enhancedPrompt) {
           enhancedPrompt += "\n";
         }
-        
+
         enhancedPrompt += prompt;
 
         child = spawn(cmd, args, {
