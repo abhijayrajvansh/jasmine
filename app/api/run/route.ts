@@ -4,13 +4,21 @@ export const runtime = "nodejs"; // ensures Node runtime so child_process works
 import { spawn } from "child_process";
 import type { ChildProcessWithoutNullStreams } from "child_process";
 
-type RunRequestBody = { prompt?: string };
+type RunRequestBody = { 
+  prompt?: string;
+  workingDirectory?: string;
+  githubRepo?: string;
+  branch?: string;
+};
 
 let __LOCAL_RUN_BUSY = false; // simple local guard (module scoped)
 
 export async function POST(req: Request) {
   const body: RunRequestBody = await req.json().catch(() => ({}));
   const prompt = (body.prompt ?? "").toString();
+  const workingDirectory = (body.workingDirectory ?? process.cwd()).toString();
+  const githubRepo = (body.githubRepo ?? "").toString();
+  const branch = (body.branch ?? "main").toString();
 
   if (!prompt) {
     return new Response(JSON.stringify({ error: "prompt is required" }), {
@@ -31,9 +39,15 @@ export async function POST(req: Request) {
   __LOCAL_RUN_BUSY = true;
 
   const cmd = process.env.CLAUDE_CLI_PATH || "claude-code";
-  const args = (process.env.CLAUDE_CLI_ARGS || "--completion")
+  const baseArgs = (process.env.CLAUDE_CLI_ARGS || "--completion")
     .split(" ")
     .filter(Boolean);
+
+  // Add working directory argument if specified and different from current
+  const args = [...baseArgs];
+  if (workingDirectory && workingDirectory !== process.cwd()) {
+    args.push("--add-dir", workingDirectory);
+  }
 
   const encoder = new TextEncoder();
   let child: ChildProcessWithoutNullStreams | undefined;
@@ -41,8 +55,29 @@ export async function POST(req: Request) {
   const stream = new ReadableStream({
     start(controller) {
       try {
+        // Create enhanced prompt with configuration context
+        let enhancedPrompt = "";
+        
+        if (workingDirectory) {
+          enhancedPrompt += `Working Directory: ${workingDirectory}\n`;
+        }
+        
+        if (githubRepo) {
+          enhancedPrompt += `GitHub Repository: ${githubRepo}\n`;
+        }
+        
+        if (branch && branch !== "main") {
+          enhancedPrompt += `Branch: ${branch}\n`;
+        }
+        
+        if (enhancedPrompt) {
+          enhancedPrompt += "\n";
+        }
+        
+        enhancedPrompt += prompt;
+
         child = spawn(cmd, args, {
-          cwd: process.cwd(),
+          cwd: workingDirectory || process.cwd(),
           env: { ...process.env },
           stdio: ["pipe", "pipe", "pipe"],
         });
@@ -67,8 +102,8 @@ export async function POST(req: Request) {
           __LOCAL_RUN_BUSY = false;
         });
 
-        // feed prompt to stdin (many CLIs accept prompt via stdin)
-        child.stdin.write(prompt + "\n");
+        // feed enhanced prompt to stdin (many CLIs accept prompt via stdin)
+        child.stdin.write(enhancedPrompt + "\n");
         child.stdin.end();
       } catch (err: unknown) {
         controller.enqueue(encoder.encode(`[exception] ${String(err)}\n`));
