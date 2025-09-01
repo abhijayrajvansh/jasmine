@@ -19,7 +19,8 @@ export default function ScriptsPage() {
       });
 
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const errorText = await response.text().catch(() => "Unknown error");
+        throw new Error(`HTTP ${response.status}: ${errorText}`);
       }
 
       const reader = response.body?.getReader();
@@ -28,7 +29,7 @@ export default function ScriptsPage() {
       }
 
       const decoder = new TextDecoder();
-      let accumulatedOutput = "";
+      let accumulatedOutput = "Starting Claude installation...\n";
 
       while (true) {
         const { done, value } = await reader.read();
@@ -39,6 +40,7 @@ export default function ScriptsPage() {
         setOutput(accumulatedOutput);
       }
     } catch (error) {
+      console.error("Installation error:", error);
       setOutput(
         (prev) =>
           prev +
@@ -60,9 +62,15 @@ export default function ScriptsPage() {
         },
       });
 
+      if (!response.ok) {
+        const errorText = await response.text().catch(() => "Unknown error");
+        throw new Error(`HTTP ${response.status}: ${errorText}`);
+      }
+
       const result = await response.text();
       setOutput((prev) => prev + result);
     } catch (error) {
+      console.error("Test error:", error);
       setOutput(
         (prev) =>
           prev +
@@ -70,6 +78,28 @@ export default function ScriptsPage() {
             error instanceof Error ? error.message : String(error)
           }`
       );
+    }
+  };
+
+  const testConnection = async () => {
+    setOutput((prev) => prev + "\n\nTesting API connection...\n");
+
+    try {
+      const response = await fetch("/api/run", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ prompt: "echo test" }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+
+      setOutput((prev) => prev + "✅ API connection successful!\n");
+    } catch (error) {
+      setOutput((prev) => prev + `❌ API connection failed: ${error}\n`);
     }
   };
 
@@ -81,6 +111,13 @@ export default function ScriptsPage() {
         </h1>
 
         <div className="mb-8 space-y-4">
+          <button
+            onClick={testConnection}
+            className="w-full bg-purple-600 hover:bg-purple-700 text-white font-medium py-3 px-4 rounded-lg transition-colors"
+          >
+            Test API Connection
+          </button>
+
           <button
             onClick={runInstallation}
             disabled={isInstalling}
